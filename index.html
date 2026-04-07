@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 TWS Multiplayer Casino</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        
+        :root {
+            --primary: #8B0000;
+            --primary-dark: #660000;
+            --gold: #FFD700;
+            --gold-dark: #FFA500;
+            --dark: #0a0a0a;
+            --dark-light: #1a1a1a;
+            --light: #ffffff;
+            --gray: #333;
+            --success: #00FF00;
+            --danger: #FF4444;
+            --warning: #FFA500;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--dark-light) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--gold);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo h1 {
+            font-size: 2.2rem;
+            color: var(--gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .logo .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .online-stats {
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .online-stats i {
+            color: var(--success);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Cards */
+        .card {
+            background: rgba(30, 30, 30, 0.95);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-title {
+            color: var(--gold);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(139, 0, 0, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(45deg, var(--warning), #fd7e14);
+            color: white;
+        }
+        
+        .btn-gold {
+            background: linear-gradient(45deg, var(--gold), var(--gold-dark));
+            color: black;
+            font-weight: bold;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            background: rgba(139, 0, 0, 0.2);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card h3 {
+            color: var(--gold);
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+        }
+        
+        /* Games Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .game-card {
+            background: rgba(40, 40, 40, 0.9);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 16px 32px rgba(255, 215, 0, 0.2);
+        }
+        
+        .game-icon {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2.5rem;
+            text-align: center;
+            font-size: 3.5rem;
+            color: var(--gold);
+        }
+        
+        .game-info {
+            padding: 1.5rem;
+        }
+        
+        .game-name {
+            font-size: 1.3rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .game-desc {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .game-meta {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+        }
+        
+        /* Rooms List */
+        .rooms-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .room-item {
+            background: rgba(50, 50, 50, 0.9);
+            border-radius: 10px;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--gold);
+        }
+        
+        .room-info h4 {
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .room-meta {
+            display: flex;
+            gap: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Game Interface */
+        .game-interface {
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 12px;
+            padding: 2rem;
+            min-height: 500px;
+            border: 2px solid var(--gold);
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .pot-display {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .pot-amount {
+            font-size: 2.5rem;
+            color: var(--gold);
+            font-weight: bold;
+        }
+        
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .player-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        
+        .player-card.active {
+            border-color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .player-avatar {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .player-name {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .player-balance {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        /* Chat */
+        .chat-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 1.5rem;
+        }
+        
+        .chat-message {
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+        }
+        
+        .chat-sender {
+            color: var(--gold);
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .chat-time {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+            float: right;
+        }
+        
+        /* Modals */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background: var(--dark-light);
+            border-radius: 12px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+            border: 3px solid var(--gold);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+        }
+        
+        .modal-title {
+            color: var(--gold);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        /* Inputs */
+        .input-group {
+            margin: 1.25rem 0;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--gold);
+            font-weight: 600;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: rgba(255, 255, 255, 0.6);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .fade-in {
+            animation: slideIn 0.3s ease;
+        }
+        
+        /* Utility */
+        .text-center { text-align: center; }
+        .text-success { color: var(--success); }
+        .text-danger { color: var(--danger); }
+        .text-warning { color: var(--warning); }
+        .text-gold { color: var(--gold); }
+        .hidden { display: none; }
+        .mt-2 { margin-top: 2rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 2rem; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div>
+                <h1><i class="fas fa-dice"></i> TWS CASINO</h1>
+                <p class="subtitle">Real-time Multiplayer Gaming</p>
+            </div>
+        </div>
+        
+        <div class="user-info">
+            <div class="online-stats">
+                <i class="fas fa-wifi"></i>
+                <span id="onlineCount">0</span> Online
+            </div>
+            <div id="userControls"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div id="content">
+            <!-- Content loads here -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>TWS Multiplayer Casino • Real-time Gaming • All games are provably fair</p>
+        <p class="mt-2">⚠️ For entertainment purposes only • Not real money gambling</p>
+    </footer>
+
+    <!-- Socket.io -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- Main App Script -->
+    <script>
+        // Main Application
+        const App = {
+            socket: null,
+            currentUser: null,
+            currentRoom: null,
+            currentPage: 'home',
+            
+            // Initialize
+            init() {
+                this.connectSocket();
+                this.showPage('home');
+                
+                // Load saved user
+                const savedUser = localStorage.getItem('tws_user');
+                if (savedUser) {
+                    this.currentUser = JSON.parse(savedUser);
+                    this.updateUserControls();
+                }
+            },
+            
+            // Connect to server
+            connectSocket() {
+                // Auto-detect server URL
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const host = window.location.host;
+                const socketUrl = `${protocol}//${host}`;
+                
+                this.socket = io(socketUrl, {
+                    transports: ['websocket', 'polling'],
+                    reconnection: true
+                });
+                
+                // Socket events
+                this.socket.on('connect', () => {
+                    console.log('Connected to game server');
+                    this.updateConnectionStatus(true);
+                    
+                    if (this.currentUser) {
+                        this.socket.emit('register', {
+                            ...this.currentUser,
+                            socketId: this.socket.id
+                        });
+                    }
+                });
+                
+                this.socket.on('registered', (data) => {
+                    if (data.success) {
+                        this.currentUser = { ...this.currentUser, ...data.player };
+                        localStorage.setItem('tws_user', JSON.stringify(this.currentUser));
+                        this.updateUserControls();
+                        this.showPage('home');
+                    }
+                });
+                
+                this.socket.on('players-online', (data) => {
+                    document.getElementById('onlineCount').textContent = data.count;
+                });
+                
+                this.socket.on('rooms-updated', (data) => {
+                    if (this.currentPage === 'lobby') {
+                        this.showPage('lobby');
+                    }
+                });
+                
+                this.socket.on('room-created', (data) => {
+                    this.currentRoom = data.room;
+                    this.showPage('game');
+                });
+                
+                this.socket.on('room-joined', (data) => {
+                    this.currentRoom = data.room;
+                    this.showPage('game');
+                });
+                
+                this.socket.on('player-joined', (data) => {
+                    if (this.currentPage === 'game') {
+                        this.showPage('game');
+                    }
+                });
+                
+                this.socket.on('game-starting', (data) => {
+                    this.showGameCountdown(data.countdown);
+                });
+                
+                this.socket.on('game-started', (data) => {
+                    this.currentRoom = data.room;
+                    this.showPage('game');
+                });
+                
+                this.socket.on('game-update', (data) => {
+                    this.currentRoom = data.room;
+                    if (this.currentPage === 'game') {
+                        this.showPage('game');
+                    }
+                });
+                
+                this.socket.on('chat-message', (data) => {
+                    this.addChatMessage(data.player, data.message, data.time);
+                });
+                
+                this.socket.on('error', (data) => {
+                    this.showAlert(data.message, 'error');
+                });
+                
+                this.socket.on('disconnect', () => {
+                    this.updateConnectionStatus(false);
+                });
+            },
+            
+            // Page Navigation
+            showPage(page) {
+                this.currentPage = page;
+                
+                switch(page) {
+                    case 'home':
+                        this.renderHomePage();
+                        break;
+                    case 'login':
+                        this.renderLoginPage();
+                        break;
+                    case 'lobby':
+                        this.renderLobbyPage();
+                        break;
+                    case 'game':
+                        this.renderGamePage();
+                        break;
+                    case 'profile':
+                        this.renderProfilePage();
+                        break;
+                }
+            },
+            
+            // Render Home Page
+            renderHomePage() {
+                const content = `
+                    <div class="fade-in">
+                        <div class="card">
+                            <h2 class="card-title"><i class="fas fa-home"></i> Welcome to TWS Casino</h2>
+                            <p style="font-size: 1.1rem; margin-bottom: 1.5rem; color: rgba(255,255,255,0.9);">
+                                Play real-time multiplayer games with players from around the world. No downloads required!
+                            </p>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <h3><i class="fas fa-users"></i> Online Now</h3>
+                                    <div class="stat-value text-success" id="homeOnlineCount">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <h3><i class="fas fa-gamepad"></i> Active Games</h3>
+                                    <div class="stat-value text-warning">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <h3><i class="fas fa-coins"></i> Total in Play</h3>
+                                    <div class="stat-value text-gold">$0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <h3><i class="fas fa-trophy"></i> Biggest Win</h3>
+                                    <div class="stat-value">$5,000</div>
+                                </div>
+                            </div>
+                            
+                            ${this.currentUser ? this.renderUserWelcome() : this.renderLoginPrompt()}
+                        </div>
+                        
+                        <div class="card">
+                            <h3 class="card-title"><i class="fas fa-gamepad"></i> Featured Games</h3>
+                            <div class="games-grid">
+                                <div class="game-card" onclick="App.showGameModal('dice')">
+                                    <div class="game-icon">
+                                        <i class="fas fa-dice"></i>
+                                    </div>
+                                    <div class="game-info">
+                                        <h4 class="game-name">Dice Battle</h4>
+                                        <p class="game-desc">1v1 dice rolling challenge. Highest roll wins the pot!</p>
+                                        <div class="game-meta">
+                                            <span><i class="fas fa-users"></i> 2 Players</span>
+                                            <span><i class="fas fa-bolt"></i> Fast Paced</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="game-card" onclick="App.showGameModal('lottery')">
+                                    <div class="game-icon">
+                                        <i class="fas fa-ticket-alt"></i>
+                                    </div>
+                                    <div class="game-info">
+                                        <h4 class="game-name">Mega Lottery</h4>
+                                        <p class="game-desc">Buy tickets for massive jackpots. Drawings every minute!</p>
+                                        <div class="game-meta">
+                                            <span><i class="fas fa-users"></i> Unlimited</span>
+                                            <span><i class="fas fa-money-bill-wave"></i> High Payout</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="game-card" onclick="App.showGameModal('jackpot')">
+                                    <div class="game-icon">
+                                        <i class="fas fa-gem"></i>
+                                    </div>
+                                    <div class="game-info">
+                                        <h4 class="game-name">Progressive Jackpot</h4>
+                                        <p class="game-desc">Contribute to growing pot. Random winner takes all!</p>
+                                        <div class="game-meta">
+                                            <span><i class="fas fa-users"></i> Many</span>
+                                            <span><i class="fas fa-chart-line"></i> Progressive</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-2">
+                                <button class="btn btn-primary" onclick="App.showPage('lobby')" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                                    <i class="fas fa-play-circle"></i> View All Games
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('content').innerHTML = content;
+                
+                // Update online count
+                fetch('/api/health')
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('homeOnlineCount').textContent = data.players || 0;
+                    });
+            },
+            
+            renderUserWelcome() {
+                return `
+                    <div class="text-center mt-2">
+                        <h3 style="color: var(--gold); margin-bottom: 1rem;">
+                            <i class="fas fa-hand-sparkles"></i> Welcome back, ${this.currentUser.displayName}!
+                        </h3>
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="App.showPage('lobby')">
+                                <i class="fas fa-play-circle"></i> Play Now
+                            </button>
+                            <button class="btn btn-success" onclick="App.createRoom('dice')">
+                                <i class="fas fa-plus-circle"></i> Create Room
+                            </button>
+                            <button class="btn btn-warning">
+                                <i class="fas fa-wallet"></i> $${this.currentUser.balance.toLocaleString()}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            renderLoginPrompt() {
+                return `
+                    <div class="text-center mt-2">
+                        <h3 style="color: var(--gold); margin-bottom: 1rem;">
+                            Ready to join the action?
+                        </h3>
+                        <button class="btn btn-gold" onclick="App.showPage('login')" style="padding: 1rem 2.5rem; font-size: 1.2rem;">
+                            <i class="fas fa-user-plus"></i> FREE REGISTRATION
+                        </button>
+                        <p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">
+                            No download • Instant play • $1,000 starting bonus
+                        </p>
+                    </div>
+                `;
+            },
+            
+            // Render Login Page
+            renderLoginPage() {
+                const content = `
+                    <div class="fade-in">
+                        <div class="card">
+                            <h2 class="card-title"><i class="fas fa-user-circle"></i> Create Your Account</h2>
+                            
+                            <div class="input-group">
+                                <label class="input-label">Choose a Username</label>
+                                <input type="text" id="username" class="input-field" placeholder="Enter username">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label class="input-label">Display Name</label>
+                                <input type="text" id="displayName" class="input-field" placeholder="How others see you">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label class="input-label">Starting Avatar</label>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+                                    ${['👤', '🎮', '👑', '💎', '🌟', '🔥', '🐲', '⚡'].map(avatar => `
+                                        <button class="btn" onclick="App.selectAvatar('${avatar}')" 
+                                                style="font-size: 1.5rem; padding: 0.5rem; background: rgba(255,255,255,0.1);">
+                                            ${avatar}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                                <input type="hidden" id="avatar" value="👤">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label class="input-label">Starting Balance</label>
+                                <select id="startingBalance" class="input-field">
+                                    <option value="1000">$1,000 (Beginner)</option>
+                                    <option value="5000">$5,000 (Regular)</option>
+                                    <option value="10000">$10,000 (High Roller)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="text-center mt-2">
+                                <button class="btn btn-gold" onclick="App.register()" style="padding: 1rem 3rem; font-size: 1.2rem;">
+                                    <i class="fas fa-rocket"></i> START PLAYING FREE
+                                </button>
+                                <p style="margin-top: 1rem; color: rgba(255,255,255,0.6); font-size: 0.9rem;">
+                                    By registering, you agree this is for entertainment only
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('content').innerHTML = content;
+            },
+            
+            // Register User
+            register() {
+                const username = document.getElementById('username')?.value;
+                const displayName = document.getElementById('displayName')?.value || username;
+                const avatar = document.getElementById('avatar')?.value || '👤';
+                const balance = parseInt(document.getElementById('startingBalance')?.value) || 1000;
+                
+                if (!username) {
+                    this.showAlert('Please enter a username', 'warning');
+                    return;
+                }
+                
+                if (!this.socket || !this.socket.connected) {
+                    this.showAlert('Connecting to server...', 'info');
+                    setTimeout(() => this.register(), 1000);
+                    return;
+                }
+                
+                this.socket.emit('register', {
+                    username,
+                    displayName,
+                    avatar,
+                    balance
+                });
+            },
+            
+            // Show Game Modal
+            showGameModal(gameType) {
+                const games = {
+                    dice: {
+                        name: 'Dice Battle',
+                        desc: '1v1 dice rolling challenge',
+                        min: 2,
+                        max: 2,
+                        icon: 'fas fa-dice'
+                    },
+                    lottery: {
+                        name: 'Mega Lottery',
+                        desc: 'Ticket-based jackpot game',
+                        min: 1,
+                        max: 999,
+                        icon: 'fas fa-ticket-alt'
+                    },
+                    jackpot: {
+                        name: 'Progressive Jackpot',
+                        desc: 'Growing pot, random winner',
+                        min: 1,
+                        max: 999,
+                        icon: 'fas fa-gem'
+                    }
+                };
+                
+                const game = games[gameType];
+                if (!game) return;
+                
+                const modal = `
+                    <div class="modal" id="gameModal" style="display: flex;">
+                        <div class="modal-content">
+                            <h3 class="modal-title"><i class="${game.icon}"></i> ${game.name}</h3>
+                            <p style="margin-bottom: 1.5rem; color: rgba(255,255,255,0.8); text-align: center;">
+                                ${game.desc}
+                            </p>
+                            
+                            <div class="input-group">
+                                <label class="input-label">Room Name (Optional)</label>
+                                <input type="text" id="roomName" class="input-field" placeholder="e.g., High Rollers Only">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label class="input-label">Entry Fee</label>
+                                <input type="number" id="entryFee" class="input-field" value="0" min="0" max="10000">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label class="input-label">Max Players</label>
+                                <select id="maxPlayers" class="input-field">
+                                    ${gameType === 'dice' 
+                                        ? '<option value="2">2 Players (1v1)</option>'
+                                        : `
+                                            <option value="2">2 Players</option>
+                                            <option value="4">4 Players</option>
+                                            <option value="8">8 Players</option>
+                                            <option value="16">16 Players</option>
+                                            <option value="999">Unlimited</option>
+                                        `}
+                                </select>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <button class="btn btn-primary" onclick="App.createRoom('${gameType}')" style="flex: 1;">
+                                    <i class="fas fa-play-circle"></i> Create Room
+                                </button>
+                                <button class="btn" onclick="document.getElementById('gameModal').remove()" style="flex: 1; background: rgba(255,255,255,0.1);">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', modal);
+            },
+            
+            // Create Room
+            createRoom(gameType) {
+                if (!this.currentUser) {
+                    this.showPage('login');
+                    return;
+                }
+                
+                const roomName = document.getElementById('roomName')?.value || '';
+                const entryFee = parseInt(document.getElementById('entryFee')?.value) || 0;
+                const maxPlayers = parseInt(document.getElementById('maxPlayers')?.value) || 8;
+                
+                this.socket.emit('create-room', {
+                    gameType,
+                    name: roomName,
+                    entryFee,
+                    maxPlayers,
+                    config: {
+                        minPlayers: gameType === 'dice' ? 2 : 1
+                    }
+                });
+                
+                // Remove modal
+                const modal = document.getElementById('gameModal');
+                if (modal) modal.remove();
+            },
+            
+            // Update User Controls
+            updateUserControls() {
+                const userControls = document.getElementById('userControls');
+                
+                if (this.currentUser) {
+                    userControls.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="text-align: right;">
+                                <div style="color: var(--gold); font-weight: bold;">${this.currentUser.displayName}</div>
+                                <div style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                                    $${this.currentUser.balance.toLocaleString()}
+                                </div>
+                            </div>
+                            <button class="btn btn-danger" onclick="App.logout()" style="padding: 0.5rem 1rem;">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    userControls.innerHTML = `
+                        <button class="btn btn-gold" onclick="App.showPage('login')">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    `;
+                }
+            },
+            
+            // Show Alert
+            showAlert(message, type = 'info') {
+                // Create alert element
+                const alert = document.createElement('div');
+                alert.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 1rem 1.5rem;
+                    background: ${type === 'error' ? 'var(--danger)' : type === 'warning' ? 'var(--warning)' : 'var(--gold)'};
+                    color: ${type === 'warning' ? 'black' : 'white'};
+                    border-radius: 8px;
+                    z-index: 10000;
+                    font-weight: 600;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    animation: slideIn 0.3s ease;
+                `;
+                alert.textContent = message;
+                document.body.appendChild(alert);
+                
+                setTimeout(() => {
+                    alert.remove();
+                }, 3000);
+            },
+            
+            // Update Connection Status
+            updateConnectionStatus(connected) {
+                const onlineStats = document.querySelector('.online-stats i');
+                if (onlineStats) {
+                    onlineStats.className = connected ? 'fas fa-wifi text-success' : 'fas fa-wifi-slash text-danger';
+                }
+            },
+            
+            // Select Avatar
+            selectAvatar(avatar) {
+                document.getElementById('avatar').value = avatar;
+            },
+            
+            // Logout
+            logout() {
+                this.currentUser = null;
+                localStorage.removeItem('tws_user');
+                this.updateUserControls();
+                this.showPage('home');
+            }
+        };
+        
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            App.init();
+        });
+    </script>
+</body>
+</html>
